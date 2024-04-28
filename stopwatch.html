@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Stopwatch</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+    }
+    .stopwatch {
+        text-align: center;
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    button {
+        font-size: 16px;
+        padding: 10px;
+        margin: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <div>
+        <div class="stopwatch">00:00</div>
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <script>
+        let startTime, updatedTime, difference, tInterval;
+        let running = false;
+        let savedTime = 0;
+
+        const stopwatch = document.querySelector('.stopwatch');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function startTimer(){
+            if (!running) {
+                startTime = new Date().getTime();
+                tInterval = setInterval(getShowTime, 1);
+                running = true;
+            }
+        }
+
+        function pauseTimer(){
+            if (running) {
+                clearInterval(tInterval);
+                savedTime = difference;
+                running = false;
+            }
+        }
+
+        function resetTimer(){
+            clearInterval(tInterval);
+            savedTime = 0;
+            difference = 0;
+            running = false;
+            stopwatch.innerHTML = "00:00";
+        }
+
+        function getShowTime(){
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime + savedTime;
+
+            let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+            if (hours === "00" && minutes === "00") {
+                stopwatch.innerHTML = seconds;
+            } else if (hours === "00") {
+                stopwatch.innerHTML = minutes + ':' + seconds;
+            } else {
+                stopwatch.innerHTML = hours + ':' + minutes + ':' + seconds;
+            }
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+    </script>
+</body>
+</html>
